@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createRandomEntry(t *testing.T) Entry {
+func createRandomEntry(t *testing.T, account Account) Entry {
 	arg := CreateEntryParams{
-		AccountID: sql.NullInt64{Int64: util.RandomInt(1, 30), Valid: true},
+		AccountID: sql.NullInt64{Int64: account.ID, Valid: true},
 		Amount:    util.RandomMoney(),
 	}
 
@@ -25,43 +25,44 @@ func createRandomEntry(t *testing.T) Entry {
 	require.NotZero(t, entry.ID)
 	require.NotZero(t, entry.CreatedAt)
 	require.NotZero(t, entry.Amount)
-
-
 	return entry
 }
 
 func TestCreateEntry(t *testing.T) {
-   createRandomEntry(t)
+	account := createRandomAccount(t)
+	createRandomEntry(t, account)
 }
 
-func TestGetEntry(t *testing.T){
-	entry := createRandomEntry(t)
-
-	fetchedEntry, err := testQueries.GetEntry(context.Background(), entry.ID)
+func TestGetEntry(t *testing.T) {
+	account := createRandomAccount(t)
+	entry1 := createRandomEntry(t, account)
+	entry2, err := testQueries.GetEntry(context.Background(), entry1.ID)
 	require.NoError(t, err)
-	require.NotEmpty(t, fetchedEntry)
+	require.NotEmpty(t, entry2)
 
-	require.Equal(t, entry.ID, fetchedEntry.ID)
-    require.Equal(t, entry.AccountID, fetchedEntry.AccountID)
-    require.Equal(t, entry.Amount, fetchedEntry.Amount)
-	require.WithinDuration(t, entry.CreatedAt, fetchedEntry.CreatedAt, time.Second)
+	require.Equal(t, entry1.ID, entry2.ID)
+	require.Equal(t, entry1.AccountID, entry2.AccountID)
+	require.Equal(t, entry1.Amount, entry2.Amount)
+	require.WithinDuration(t, entry1.CreatedAt, entry2.CreatedAt, time.Second)
 }
 
-func TestListsEntry(t *testing.T){
-	for i := 0 ; i < 5 ; i++{
-		createRandomEntry(t)
+func TestListsEntry(t *testing.T) {
+	account := createRandomAccount(t)
+	for i := 0; i < 10; i++ {
+		createRandomEntry(t, account)
 	}
 
 	arg := ListEntriesParams{
-		Limit: 5,
-		Offset: 5,
+		AccountID: sql.NullInt64{Int64: account.ID,Valid: true},
+		Limit:     5,
+		Offset:    5,
 	}
 
 	entries, err := testQueries.ListEntries(context.Background(), arg)
 	require.NoError(t, err)
 	require.Len(t, entries, 5)
 
-	for _, entry := range entries{
+	for _, entry := range entries {
 		require.NotEmpty(t, entry)
 	}
 }
