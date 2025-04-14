@@ -35,6 +35,6 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: simplebank
       run: |
-        helm package $REPOSITORY
-        helm push $REPOSITORY-0.1.0.tgz oci://$REGISTRY
+        helm package helm/simplebank
+        helm push simplebank-0.1.0.tgz oci://$REGISTRY
         
