@@ -27,6 +27,9 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
+    - name: Debug file tree
+      run: ls -R
+
     - name: Package and push helm chart to Amazon ECR
       env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
