@@ -113,8 +113,9 @@ func TestCreateTransfer_Success(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token,  err := maker.CreateToken(account1.Owner, time.Hour)
+	token,payload ,  err := maker.CreateToken(account1.Owner, time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	// สร้าง request body
 	requestBody := transferRequest{
@@ -166,8 +167,9 @@ func TestCreateTransfer_InvalidRequest(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token, err := maker.CreateToken(util.RandomOwner(), time.Hour)
+	token, payload, err := maker.CreateToken(util.RandomOwner(), time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	testCases := []struct {
 		name          string
@@ -290,8 +292,9 @@ func TestCreateTransfer_FromAccountNotFound(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token,  err := maker.CreateToken(util.RandomOwner(), time.Hour)
+	token, payload,  err := maker.CreateToken(util.RandomOwner(), time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	// สร้าง request body
 	requestBody := transferRequest{
@@ -344,8 +347,9 @@ func TestCreateTransfer_ToAccountNotFound(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token,  err := maker.CreateToken(fromAccount.Owner, time.Hour)
+	token, payload, err := maker.CreateToken(fromAccount.Owner, time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	// สร้าง request body
 	requestBody := transferRequest{
@@ -397,8 +401,9 @@ func TestCreateTransfer_FromAccountCurrencyMismatch(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token, err := maker.CreateToken(fromAccount.Owner, time.Hour)
+	token, payload,err := maker.CreateToken(fromAccount.Owner, time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	// สร้าง request body ที่มี currency ไม่ตรงกับบัญชี
 	requestBody := transferRequest{
@@ -454,8 +459,9 @@ func TestCreateTransfer_ToAccountCurrencyMismatch(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token,  err := maker.CreateToken(fromAccount.Owner, time.Hour)
+	token, payload, err := maker.CreateToken(fromAccount.Owner, time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	// สร้าง request body
 	requestBody := transferRequest{
@@ -507,8 +513,9 @@ func TestCreateTransfer_UnauthorizedUser(t *testing.T) {
 	require.NoError(t, err)
 	
 	differentUser := util.RandomOwner() // สร้างชื่อผู้ใช้ที่ไม่ใช่เจ้าของบัญชี
-	token,  err := maker.CreateToken(differentUser, time.Hour)
+	token,  paylaod,err := maker.CreateToken(differentUser, time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, paylaod)
 
 	// สร้าง request body
 	requestBody := transferRequest{
@@ -565,8 +572,9 @@ func TestCreateTransfer_DBError(t *testing.T) {
 	maker, err := token.NewPasetoMaker(util.RandomString(32))
 	require.NoError(t, err)
 	
-	token, err := maker.CreateToken(fromAccount.Owner, time.Hour)
+	token, payload,err := maker.CreateToken(fromAccount.Owner, time.Hour)
 	require.NoError(t, err)
+	require.NotEmpty(t, payload)
 
 	// สร้าง request body
 	requestBody := transferRequest{
