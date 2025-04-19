@@ -13,6 +13,8 @@ import (
 type Store interface{
 	Querier
 	TransferTx(ctx context.Context, arg TransferParams) (TransferTxResult, error)
+	CreateUserTx(ctx context.Context, arg CreateUserTxParams) (CreateUserTxResult, error)
+	VerifyEmailTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
 }
 
 type SQLStore struct{

@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY app.env .
 COPY start.sh .
-RUN ls -la .
+RUN echo "---- Contents of /app ----" && ls -la /app
 RUN chmod +x start.sh
 COPY db/migration ./db/migration
 

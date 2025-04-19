@@ -7,6 +7,7 @@ import (
 	"github.com/sangketkit01/simple-bank/pb"
 	"github.com/sangketkit01/simple-bank/token"
 	"github.com/sangketkit01/simple-bank/util"
+	"github.com/sangketkit01/simple-bank/worker"
 )
 
 // Server serves HTTP requests for our banking service.
@@ -15,10 +16,11 @@ type Server struct{
 	config util.Config
 	store db.Store
 	tokenMaker token.Maker
+	taskDistributor worker.TaskDistributor
 }
 
 // NewServer creates a new gRPC server and setup routing
-func NewServer(config util.Config, store db.Store) (*Server, error){
+func NewServer(config util.Config, store db.Store, taskDistributor worker.TaskDistributor) (*Server, error){
 	tokerMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil{
 		return nil, fmt.Errorf("cannot create token maker: %w",err)
@@ -27,6 +29,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error){
 		config: config,
 		store: store,
 		tokenMaker: tokerMaker,
+		taskDistributor: taskDistributor,
 	}
 
 	return server, nil

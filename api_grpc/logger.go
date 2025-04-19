@@ -64,6 +64,7 @@ func HttpLogger(handler http.Handler) http.Handler {
 			ResponseWriter: w,
 			StatusCode:     http.StatusOK,
 		}
+		
 		handler.ServeHTTP(rec, r)
 		duration := time.Since(startTime)
 
